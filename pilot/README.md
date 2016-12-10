@@ -29,4 +29,4 @@ Generate Makefile and compile OpenCV
 
 ## (macOS) Compile and install OpenCV with Homebrew
 
-    brew install opencv --with-java
+    brew install homebrew/science/opencv --with-java
