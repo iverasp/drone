@@ -8,6 +8,8 @@ import pilot.peripheral.motor.MotorPlacement;
 import pilot.peripheral.controller.PCA9685;
 import pilot.peripheral.controller.PWMController;
 import pilot.peripheral.sensor.*;
+import pilot.peripheral.sensor.MPU9250;
+import pilot.peripheral.sensor.mpu.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,7 +20,7 @@ public class QuadController {
     private PWMController pwmController;
     private Map<MotorPlacement, Motor> motors;
     private Altimeter altimeter;
-    private IMU imu;
+    private pilot.peripheral.sensor.mpu.MPU9250 imu;
     private Radio radio;
     private PID pid;
     private ADC adc;
@@ -43,7 +45,7 @@ public class QuadController {
     }
 
     private void setupSensors() throws IOException, I2CFactory.UnsupportedBusNumberException {
-        imu = new MPU9250();
+        imu = new pilot.peripheral.sensor.mpu.MPU9250();
         altimeter = new MPL3115A2();
         adc = new ADS1115();
         battery = new AnalogBattery(adc.getProvider());

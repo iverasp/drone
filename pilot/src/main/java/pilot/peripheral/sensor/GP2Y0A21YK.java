@@ -2,18 +2,28 @@ package pilot.peripheral.sensor;
 
 import com.pi4j.component.sensor.DistanceSensorChangeEvent;
 import com.pi4j.component.sensor.impl.DistanceSensorComponent;
-import com.pi4j.gpio.extension.ads.ADS1115GpioProvider;
+import com.pi4j.gpio.extension.ads.ADS1015GpioProvider;
+import com.pi4j.gpio.extension.ads.ADS1015Pin;
 import com.pi4j.gpio.extension.ads.ADS1115Pin;
 import com.pi4j.io.gpio.*;
+import com.pi4j.io.i2c.I2CFactory;
+
+import java.io.IOException;
 
 public class GP2Y0A21YK implements Distance {
 
-    private Pin ADC_PIN_DISTANCE = ADS1115Pin.INPUT_A1;
-    private ADS1115GpioProvider adcProvider;
+    private Pin ADC_PIN_DISTANCE = ADS1015Pin.INPUT_A1;
+    private ADS1015GpioProvider adcProvider;
     private double distance;
 
-    public GP2Y0A21YK(GpioProvider adcProvider) {
-        this.adcProvider = (ADS1115GpioProvider) adcProvider;
+    public GP2Y0A21YK() {
+        try {
+            adcProvider = new ADS1015GpioProvider(1, 0x48);
+        } catch (I2CFactory.UnsupportedBusNumberException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         initialize();
     }
 
@@ -21,7 +31,7 @@ public class GP2Y0A21YK implements Distance {
     public void initialize() {
         final GpioController gpio = GpioFactory.getInstance();
         final GpioPinAnalogInput distanceSensorPin = gpio.provisionAnalogInputPin(adcProvider, ADC_PIN_DISTANCE, "DistanceSensor");
-        adcProvider.setProgrammableGainAmplifier(ADS1115GpioProvider.ProgrammableGainAmplifierValue.PGA_4_096V, ADC_PIN_DISTANCE);
+        adcProvider.setProgrammableGainAmplifier(ADS1015GpioProvider.ProgrammableGainAmplifierValue.PGA_4_096V, ADC_PIN_DISTANCE);
         adcProvider.setEventThreshold(150, ADC_PIN_DISTANCE);
 
         DistanceSensorComponent distanceSensor = new DistanceSensorComponent(distanceSensorPin);
